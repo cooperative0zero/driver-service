@@ -21,9 +21,9 @@ class CarServiceImpl (
 
     @Transactional(readOnly = true)
     override fun getById(id: Long): CarResponse {
-        val category = carRepository.findById(id)
+        val car = carRepository.findById(id)
             .orElseThrow { CarNotExistsException("Car with id = $id not exists") }
-        return conversionService.convert(category, CarResponse::class.java)!!
+        return conversionService.convert(car, CarResponse::class.java)!!
     }
 
     @Transactional(readOnly = true)

@@ -21,9 +21,9 @@ class DriverServiceImpl (
 
     @Transactional(readOnly = true)
     override fun getById(id: Long): DriverResponse {
-        val category = driverRepository.findById(id)
+        val driver = driverRepository.findById(id)
             .orElseThrow { DriverNotExistsException("Driver with id = $id not exists") }
-        return conversionService.convert(category, DriverResponse::class.java)!!
+        return conversionService.convert(driver, DriverResponse::class.java)!!
     }
 
     @Transactional(readOnly = true)
