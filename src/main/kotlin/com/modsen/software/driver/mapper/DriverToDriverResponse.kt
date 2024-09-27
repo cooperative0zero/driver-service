@@ -10,11 +10,14 @@ class DriverToDriverResponse: Converter<Driver, DriverResponse> {
     override fun convert(source: Driver): DriverResponse {
         return DriverResponse(
             source.id,
-            source.fmlNames,
+            source.fullName,
             source.email,
             source.phone,
             source.gender.toString(),
-            source.car?.id,
+            source.car?.id ?: 0,
+            source.rating,
+            source.balance,
+            source.status.toString(),
             source.isDeleted
         )
     }

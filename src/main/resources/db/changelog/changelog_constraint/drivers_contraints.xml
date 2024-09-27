@@ -17,10 +17,12 @@
         />
 
         <addPrimaryKey columnNames="d_id" tableName="drivers" constraintName="pk_drivers_id"/>
-        <addNotNullConstraint columnName="d_fml_names" tableName="drivers"/>
+        <addNotNullConstraint columnName="d_full_name" tableName="drivers"/>
         <addNotNullConstraint columnName="d_email" tableName="drivers"/>
         <addNotNullConstraint columnName="d_phone" tableName="drivers"/>
         <addNotNullConstraint columnName="d_gender" tableName="drivers"/>
+        <addNotNullConstraint columnName="d_balance" tableName="drivers"/>
+        <addNotNullConstraint columnName="d_status" tableName="drivers"/>
         <addNotNullConstraint columnName="d_deleted" tableName="drivers"/>
     </changeSet>
 

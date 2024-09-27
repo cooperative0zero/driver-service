@@ -10,15 +10,15 @@ import org.springframework.stereotype.Component
 class CarRequestToCar: Converter<CarRequest, Car> {
     override fun convert(source: CarRequest): Car? {
         val driver = Driver()
-        driver.id = source.driverId
+        driver.id = source.driverId ?: 0
 
         return Car(
-            source.id,
-            source.color!!,
-            source.model!!,
-            source.vehicleNumber!!,
-            if (source.driverId == null) null else driver,
-            source.isDeleted!!
+            source.id ?: 0,
+            color = source.color ?: "",
+            model = source.model ?: "",
+            vehicleNumber = source.vehicleNumber ?: "",
+            if (driver.id == 0L) null else driver,
+            source.isDeleted ?: false
         )
     }
 }

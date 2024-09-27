@@ -5,13 +5,14 @@ import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
+import java.math.BigDecimal
 
 data class DriverRequest(
     @field:Min(1)
     val id: Long?,
 
     @field:NotBlank
-    val fmlNames: String?,
+    val fullName: String?,
 
     @field:NotNull
     @field:Email
@@ -26,6 +27,8 @@ data class DriverRequest(
 
     @field:Min(1)
     val carId: Long?,
+
+    val status: String?,
 
     @field:NotNull
     val isDeleted: Boolean?

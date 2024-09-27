@@ -2,55 +2,55 @@ package com.modsen.software.driver.controller
 
 import com.modsen.software.driver.dto.CarRequest
 import com.modsen.software.driver.dto.CarResponse
-import com.modsen.software.driver.service.CarService
+import com.modsen.software.driver.dto.PaginatedResponse
+import com.modsen.software.driver.entity.Car
+import com.modsen.software.driver.service.CarServiceImpl
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
-import lombok.RequiredArgsConstructor
+import org.springframework.core.convert.ConversionService
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/cars")
 class CarController(
-    private val carService: CarService
+    private val carService: CarServiceImpl,
+    private val conversionService: ConversionService,
 ) {
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     fun getAll(
         @RequestParam(required = false, defaultValue = "0") @Min(0) pageNumber: Int,
         @RequestParam(required = false, defaultValue = "10") @Min(1) pageSize: Int,
         @RequestParam(required = false, defaultValue = "id") sortBy: String,
         @RequestParam(required = false, defaultValue = "desc") sortOrder: String
-    ): ResponseEntity<List<CarResponse>> {
-        val response: List<CarResponse> = carService.getAll(pageNumber, pageSize, sortBy, sortOrder)
-        return ResponseEntity<List<CarResponse>>(response, HttpStatus.OK)
+    ): PaginatedResponse<CarResponse> {
+        val result = carService.getAll(pageNumber, pageSize, sortBy, sortOrder)
+            .asSequence()
+            .map { o -> conversionService.convert(o, CarResponse::class.java)!!}
+            .toList()
+
+        return PaginatedResponse(result, pageNumber, pageSize, result.size)
     }
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable @Min(1) id: Long): ResponseEntity<CarResponse> {
-        val response: CarResponse = carService.getById(id)
-        return ResponseEntity<CarResponse>(response, HttpStatus.OK)
-    }
+    @ResponseStatus(HttpStatus.OK)
+    fun getById(@PathVariable @Min(1) id: Long) = conversionService.convert(carService.getById(id), CarResponse::class.java)
 
     @DeleteMapping("/{id}")
-    fun softDelete(@PathVariable @Min(1) id: Long): ResponseEntity<String> {
-        carService.softDelete(id)
-        return ResponseEntity("Deleted successfully", HttpStatus.OK)
-    }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun softDelete(@PathVariable @Min(1) id: Long)  = carService.softDelete(id)
 
     @PostMapping
-    fun save(@RequestBody @Valid car: CarRequest): ResponseEntity<CarResponse> {
-        val response: CarResponse = carService.save(car)
-        return ResponseEntity<CarResponse>(response, HttpStatus.CREATED)
-    }
+    @ResponseStatus(HttpStatus.CREATED)
+    fun save(@RequestBody @Valid car: CarRequest) = conversionService
+        .convert(carService.save(conversionService.convert(car, Car::class.java)!!), CarResponse::class.java)
 
     @PutMapping
-    fun update(@RequestBody @Valid car: CarRequest): ResponseEntity<CarResponse> {
-        val response: CarResponse = carService.update(car)
-        return ResponseEntity<CarResponse>(response, HttpStatus.OK)
-    }
+    @ResponseStatus(HttpStatus.OK)
+    fun update(@RequestBody @Valid car: CarRequest) = conversionService
+        .convert(carService.update(conversionService.convert(car, Car::class.java)!!), CarResponse::class.java)
 }

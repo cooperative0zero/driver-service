@@ -17,9 +17,7 @@ class ExceptionHandler {
     @ExceptionHandler(BaseCustomException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @JsonView(BaseCustomException::class)
-    fun handleCustomException(baseCustomException: BaseCustomException): BaseCustomException{
-        return baseCustomException;
-    }
+    fun handleCustomException(baseCustomException: BaseCustomException) = baseCustomException
 
     @ExceptionHandler(ConstraintViolationException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -41,7 +39,5 @@ class ExceptionHandler {
 
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    fun handleCommonException(e: Exception): String {
-        return "Exception: " + e.message
-    }
+    fun handleCommonException(e: Exception) = "Exception: " + e.message
 }
