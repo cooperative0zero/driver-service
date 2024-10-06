@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="driver_table_setup" author="Aleksej">
+        <createTable tableName="drivers">
+            <column name="d_id" type="bigint" autoIncrement="true" />
+            <column name="d_full_name" type="varchar(255)" />
+            <column name="d_email" type="varchar(255)" />
+            <column name="d_phone" type="varchar(50)"/>
+            <column name="d_gender" type="varchar(20)" />
+            <column name="d_car_id" type="bigint" />
+            <column name="d_rating" type="real" />
+            <column name="d_balance" type="DECIMAL(10, 2)" />
+            <column name="d_status" type="varchar(20)" />
+            <column name="d_deleted" type="boolean" />
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
