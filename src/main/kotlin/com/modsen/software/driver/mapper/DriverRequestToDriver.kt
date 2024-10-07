@@ -17,15 +17,15 @@ class DriverRequestToDriver: Converter<DriverRequest, Driver> {
 
         return Driver(
             source.id ?: 0,
-            fullName = source.fullName ?: "",
-            email = source.email ?: "",
-            phone = source.phone ?: "",
-            Gender.valueOf(source.gender?.uppercase() ?: "UNSPECIFIED"),
+            fullName = source.fullName,
+            email = source.email,
+            phone = source.phone,
+            Gender.valueOf(source.gender.uppercase()),
             if (car.id == 0L) null else car,
             0.0f,
             BigDecimal(0.0),
             DriverStatus.valueOf(source.status?.uppercase() ?: "UNDEFINED"),
-            source.isDeleted ?: false
+            source.isDeleted
         )
     }
 }

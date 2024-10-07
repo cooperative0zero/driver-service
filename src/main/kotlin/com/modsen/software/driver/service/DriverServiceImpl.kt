@@ -1,6 +1,5 @@
 package com.modsen.software.driver.service
 
-import com.modsen.software.driver.dto.DriverResponse
 import com.modsen.software.driver.entity.Driver
 import com.modsen.software.driver.exception.DriverAlreadyExistsException
 import com.modsen.software.driver.exception.DriverNotExistsException

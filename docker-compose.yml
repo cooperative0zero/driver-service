@@ -3,17 +3,19 @@ services:
     image: 'driver-service:latest'
     build:
       dockerfile: Dockerfile
-    container_name: app
+    container_name: driver-service
     depends_on:
-      - db
+      - drivers_db
+    networks:
+      - microservices-network
     ports:
-      - "8080:8080"
+      - "8082:8080"
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
-  db:
+  drivers_db:
     image: postgres:latest
     container_name: drivers_db
     environment:
@@ -21,6 +23,12 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "5434:5432"
+    networks:
+      - microservices-network
     volumes:
       - /var/lib/docker/volumes/drivers-db:/var/lib/postgresql/data
+
+networks:
+  microservices-network:
+    external: true
