@@ -12,18 +12,18 @@ data class DriverRequest(
     val id: Long?,
 
     @field:NotBlank
-    val fullName: String?,
+    val fullName: String,
 
     @field:NotNull
     @field:Email
-    val email: String?,
+    val email: String,
 
     @field:NotNull
     @field:Pattern(regexp = "^\\d{6,}$", message = "Phone number must be valid")
-    val phone: String?,
+    val phone: String,
 
     @field:NotBlank
-    val gender: String?,
+    val gender: String,
 
     @field:Min(1)
     val carId: Long?,
@@ -31,5 +31,5 @@ data class DriverRequest(
     val status: String?,
 
     @field:NotNull
-    val isDeleted: Boolean?
+    val isDeleted: Boolean
 )

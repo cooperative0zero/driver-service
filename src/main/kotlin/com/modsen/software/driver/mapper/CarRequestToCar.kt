@@ -14,11 +14,11 @@ class CarRequestToCar: Converter<CarRequest, Car> {
 
         return Car(
             source.id ?: 0,
-            color = source.color ?: "",
-            model = source.model ?: "",
-            vehicleNumber = source.vehicleNumber ?: "",
+            color = source.color,
+            model = source.model,
+            vehicleNumber = source.vehicleNumber,
             if (driver.id == 0L) null else driver,
-            source.isDeleted ?: false
+            source.isDeleted
         )
     }
 }

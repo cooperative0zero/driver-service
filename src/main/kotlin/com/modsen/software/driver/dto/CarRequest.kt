@@ -9,17 +9,17 @@ data class CarRequest(
     val id: Long?,
 
     @field:NotBlank
-    val color: String?,
+    val color: String,
 
     @field:NotBlank
-    val model: String?,
+    val model: String,
 
     @field:NotBlank
-    val vehicleNumber: String?,
+    val vehicleNumber: String,
 
     @field:Min(1)
     val driverId: Long?,
 
     @field:NotNull
-    val isDeleted: Boolean?,
+    val isDeleted: Boolean,
 )
