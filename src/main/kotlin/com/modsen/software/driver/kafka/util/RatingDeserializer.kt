@@ -1,32 +1,30 @@
-package com.modsen.software.driver.kafka.util;
+package com.modsen.software.driver.kafka.util
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modsen.software.driver.kafka.event.BaseRatingEvent;
-import com.modsen.software.driver.kafka.event.DriverRatingRecalculated;
-import com.modsen.software.driver.kafka.event.PassengerRatingRecalculated;
-import org.apache.kafka.common.serialization.Deserializer;
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.modsen.software.driver.kafka.event.BaseRatingEvent
+import com.modsen.software.driver.kafka.event.DriverRatingRecalculated
+import com.modsen.software.driver.kafka.event.PassengerRatingRecalculated
+import org.apache.kafka.common.serialization.Deserializer
 
-import java.util.Map;
+class RatingDeserializer : Deserializer<BaseRatingEvent> {
+    private val objectMapper = ObjectMapper()
 
-public class RatingDeserializer implements Deserializer<BaseRatingEvent> {
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @Override
-    public BaseRatingEvent deserialize(String topic, byte[] data) {
+    override fun deserialize(topic: String, data: ByteArray): BaseRatingEvent {
         try {
-            Map<String, Object> map = objectMapper.readValue(data, new TypeReference<>() {});
-            String type = (String) map.get("type");
+            val map: Map<String, Any> =
+                objectMapper.readValue(data, object : TypeReference<Map<String, Any>>() {})
+            val type = map["type"] as String?
 
             if ("DriverRatingRecalculated".contentEquals(type)) {
-                return objectMapper.readValue(data, DriverRatingRecalculated.class);
+                return objectMapper.readValue(data, DriverRatingRecalculated::class.java)
             } else if ("PassengerRatingRecalculated".contentEquals(type)) {
-                return objectMapper.readValue(data, PassengerRatingRecalculated.class);
+                return objectMapper.readValue(data, PassengerRatingRecalculated::class.java)
             }
 
-            throw new IllegalArgumentException("Unknown type: " + type);
-        } catch (Exception e) {
-            throw new RuntimeException("Error deserializing ", e);
+            throw IllegalArgumentException("Unknown type: $type")
+        } catch (e: Exception) {
+            throw RuntimeException("Error deserializing ", e)
         }
     }
 }

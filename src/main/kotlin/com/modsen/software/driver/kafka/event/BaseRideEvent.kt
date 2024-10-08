@@ -1,9 +1,6 @@
-package com.modsen.software.driver.kafka.event;
+package com.modsen.software.driver.kafka.event
 
-import lombok.Data;
-
-@Data
-public abstract class BaseRideEvent {
-    protected Long rideId;
-    protected String type;
-}
+abstract class BaseRideEvent (
+    open val rideId: Long,
+    val type: String,
+)

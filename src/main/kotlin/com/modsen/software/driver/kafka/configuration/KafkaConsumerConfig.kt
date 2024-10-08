@@ -1,50 +1,38 @@
-package com.modsen.software.driver.kafka.configuration;
+package com.modsen.software.driver.kafka.configuration
 
-import com.modsen.software.driver.kafka.util.GenericDeserializer;
-import com.modsen.software.driver.kafka.util.RideDeserializer;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.modsen.software.driver.kafka.util.GenericDeserializer
+import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.common.serialization.StringDeserializer
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
+import org.springframework.kafka.core.ConsumerFactory
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 
 @Configuration
-public class KafkaConsumerConfig {
-
-    @Value(value = "${spring.kafka.bootstrap-servers}")
-    private String bootstrapAddress;
+class KafkaConsumerConfig(
+    @Value(value = "\${spring.kafka.bootstrap-servers}")
+    private val bootstrapAddress: String
+) {
 
     @Bean
-    public ConsumerFactory<? super String, ? super Object> consumerFactory() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(
-                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                bootstrapAddress);
-        props.put(
-                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-                StringDeserializer.class);
-        props.put(
-                ConsumerConfig.GROUP_ID_CONFIG,
-                "driverConsumerGroup"
-        );
-        props.put(
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                GenericDeserializer.class.getName());
-        return new DefaultKafkaConsumerFactory<>(props);
+    fun consumerFactory(): ConsumerFactory<in String, in Any> {
+        val props: MutableMap<String, Any> = HashMap()
+
+        props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapAddress
+        props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
+        props[ConsumerConfig.GROUP_ID_CONFIG] = "driverConsumerGroup"
+        props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = GenericDeserializer::class.java.name
+
+        return DefaultKafkaConsumerFactory(props)
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
+    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
+        val factory = ConcurrentKafkaListenerContainerFactory<String, Any>()
+        factory.consumerFactory = consumerFactory()
 
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
-        return factory;
+        return factory
     }
 }

@@ -1,27 +1,23 @@
-package com.modsen.software.driver.kafka.util;
+package com.modsen.software.driver.kafka.util
 
-import org.apache.kafka.common.header.Headers;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
-import com.modsen.software.driver.kafka.configuration.KafkaTopics;
+import com.modsen.software.driver.kafka.configuration.KafkaTopics
+import org.apache.kafka.common.header.Headers
+import org.springframework.kafka.support.serializer.JsonDeserializer
 
-public class GenericDeserializer extends JsonDeserializer<Object> {
-
-    public GenericDeserializer() {}
-
-    @Override
-    public Object deserialize(String topic, Headers headers, byte[] data)
-    {
-        switch (topic)
-        {
-            case KafkaTopics.RIDES_TOPIC:
-                try (RideDeserializer rideDeserializer = new RideDeserializer()) {
-                    return rideDeserializer.deserialize(topic, data);
+class GenericDeserializer : JsonDeserializer<Any>() {
+    override fun deserialize(topic: String, headers: Headers, data: ByteArray): Any {
+        return when (topic) {
+            KafkaTopics.RIDES_TOPIC -> {
+                RideDeserializer().use { rideDeserializer ->
+                    return rideDeserializer.deserialize(topic, data)
                 }
-            case KafkaTopics.RATING_TOPIC:
-                try (RatingDeserializer ratingDeserializer = new RatingDeserializer()) {
-                    return ratingDeserializer.deserialize(topic, data);
-                }
+            }
+
+            KafkaTopics.RATING_TOPIC -> RatingDeserializer().use { ratingDeserializer ->
+                return ratingDeserializer.deserialize(topic, data)
+            }
+
+            else -> {super.deserialize(topic, data)}
         }
-        return super.deserialize(topic, data);
     }
 }

@@ -1,24 +1,22 @@
-package com.modsen.software.driver.kafka.util;
+package com.modsen.software.driver.kafka.util
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modsen.software.driver.kafka.event.BaseDriverEvent;
-import com.modsen.software.driver.kafka.event.DriverSelectedEvent;
-import org.apache.kafka.common.serialization.Serializer;
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.modsen.software.driver.kafka.event.BaseDriverEvent
+import com.modsen.software.driver.kafka.event.DriverSelectedEvent
+import org.apache.kafka.common.serialization.Serializer
 
-public class DriverEventSerializer implements Serializer<BaseDriverEvent> {
+class DriverEventSerializer : Serializer<BaseDriverEvent> {
+    private val objectMapper = ObjectMapper()
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @Override
-    public byte[] serialize(String s, BaseDriverEvent baseDriverEvent) {
+    override fun serialize(s: String, baseDriverEvent: BaseDriverEvent): ByteArray {
         try {
-            if (baseDriverEvent instanceof DriverSelectedEvent) {
-                return objectMapper.writeValueAsBytes(baseDriverEvent);
+            if (baseDriverEvent is DriverSelectedEvent) {
+                return objectMapper.writeValueAsBytes(baseDriverEvent)
             }
 
-            throw new IllegalArgumentException("Unknown type: " + baseDriverEvent.getClass());
-        } catch (Exception e) {
-            throw new RuntimeException("Error serializing MyCustomObject", e);
+            throw IllegalArgumentException("Unknown type: " + baseDriverEvent::class)
+        } catch (e: Exception) {
+            throw RuntimeException("Error serializing MyCustomObject", e)
         }
     }
 }

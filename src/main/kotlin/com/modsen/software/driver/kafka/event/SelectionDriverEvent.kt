@@ -1,11 +1,5 @@
-package com.modsen.software.driver.kafka.event;
+package com.modsen.software.driver.kafka.event
 
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
-public class SelectionDriverEvent extends BaseRideEvent{
-    public SelectionDriverEvent(Long rideId) {
-        this.rideId = rideId;
-        this.type = this.getClass().getSimpleName();
-    }
+data class SelectionDriverEvent(override val rideId: Long) : BaseRideEvent(rideId, SelectionDriverEvent::class.java.simpleName) {
+    constructor() : this(0)
 }

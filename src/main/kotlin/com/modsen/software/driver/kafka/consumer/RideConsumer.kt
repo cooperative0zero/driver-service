@@ -1,24 +1,25 @@
-package com.modsen.software.driver.kafka.consumer;
+package com.modsen.software.driver.kafka.consumer
 
-import com.modsen.software.driver.kafka.configuration.KafkaTopics;
-import com.modsen.software.driver.kafka.event.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
+import com.modsen.software.driver.kafka.configuration.KafkaTopics
+import com.modsen.software.driver.kafka.event.BaseDriverEvent
+import com.modsen.software.driver.kafka.event.BaseRideEvent
+import com.modsen.software.driver.kafka.event.DriverSelectedEvent
+import com.modsen.software.driver.kafka.event.SelectionDriverEvent
+import lombok.RequiredArgsConstructor
+import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.stereotype.Service
 
 @Service
 @RequiredArgsConstructor
-public class RideConsumer {
+class RideConsumer(private val kafkaTemplate: KafkaTemplate<String, BaseDriverEvent>) {
 
-    private final KafkaTemplate<String, BaseDriverEvent> kafkaTemplate;
+    @KafkaListener(topics = [KafkaTopics.RIDES_TOPIC], groupId = "driverConsumerGroup")
+    fun listenRides(rideEvent: BaseRideEvent) {
+        println(rideEvent)
 
-    @KafkaListener(topics = KafkaTopics.RIDES_TOPIC, groupId = "driverConsumerGroup")
-    public void listenRides(BaseRideEvent rideEvent) {
-        System.out.println(rideEvent);
-
-        if (rideEvent instanceof SelectionDriverEvent) {
-            kafkaTemplate.send(KafkaTopics.DRIVER_TOPIC, new DriverSelectedEvent(1L, 2L));
+        if (rideEvent is SelectionDriverEvent) {
+            kafkaTemplate.send(KafkaTopics.DRIVER_TOPIC, DriverSelectedEvent(1L, 2L))
         }
     }
 }

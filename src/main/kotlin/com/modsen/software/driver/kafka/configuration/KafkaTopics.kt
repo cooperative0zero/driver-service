@@ -1,7 +1,7 @@
-package com.modsen.software.driver.kafka.configuration;
+package com.modsen.software.driver.kafka.configuration
 
-public class KafkaTopics {
-    public static final String RIDES_TOPIC = "ride_events";
-    public static final String DRIVER_TOPIC = "driver_events";
-    public static final String RATING_TOPIC = "rating_events";
+object KafkaTopics {
+    const val RIDES_TOPIC: String = "ride_events"
+    const val DRIVER_TOPIC: String = "driver_events"
+    const val RATING_TOPIC: String = "rating_events"
 }

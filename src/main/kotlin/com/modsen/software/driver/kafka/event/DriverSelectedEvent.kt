@@ -1,18 +1,6 @@
-package com.modsen.software.driver.kafka.event;
+package com.modsen.software.driver.kafka.event
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-@EqualsAndHashCode(callSuper = true)
-@Data
-@NoArgsConstructor
-public class DriverSelectedEvent extends BaseDriverEvent {
-    private Long rideId;
-
-    public DriverSelectedEvent(Long driverId, Long rideId) {
-        this.driverId = driverId;
-        this.rideId = rideId;
-        this.type = this.getClass().getSimpleName();
+data class DriverSelectedEvent(override var driverId: Long, var rideId: Long) :
+    BaseDriverEvent(driverId, DriverSelectedEvent::class.java.simpleName) {
+        constructor() : this(0, 0)
     }
-}

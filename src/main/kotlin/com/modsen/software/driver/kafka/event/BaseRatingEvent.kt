@@ -1,8 +1,5 @@
-package com.modsen.software.driver.kafka.event;
+package com.modsen.software.driver.kafka.event
 
-import lombok.Data;
-
-@Data
-public abstract class BaseRatingEvent {
-    protected String type;
-}
+abstract class BaseRatingEvent (
+    val type: String,
+)

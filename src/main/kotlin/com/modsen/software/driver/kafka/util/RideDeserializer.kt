@@ -1,32 +1,29 @@
-package com.modsen.software.driver.kafka.util;
+package com.modsen.software.driver.kafka.util
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.modsen.software.driver.kafka.event.BaseRideEvent
+import com.modsen.software.driver.kafka.event.SelectionDriverEvent
+import com.modsen.software.driver.kafka.event.StatusChangedEvent
+import org.apache.kafka.common.serialization.Deserializer
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modsen.software.driver.kafka.event.BaseRideEvent;
-import com.modsen.software.driver.kafka.event.SelectionDriverEvent;
-import com.modsen.software.driver.kafka.event.StatusChangedEvent;
-import org.apache.kafka.common.serialization.Deserializer;
+class RideDeserializer : Deserializer<BaseRideEvent> {
+    private val objectMapper = ObjectMapper()
 
-import java.util.Map;
-
-public class RideDeserializer implements Deserializer<BaseRideEvent> {
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @Override
-    public BaseRideEvent deserialize(String topic, byte[] data) {
+    override fun deserialize(topic: String, data: ByteArray): BaseRideEvent {
         try {
-            Map<String, Object> map = objectMapper.readValue(data, new TypeReference<>() {});
-            String type = (String) map.get("type");
+            val map: Map<String, Any> =
+                objectMapper.readValue(data, object : TypeReference<Map<String, Any>>() {})
+            val type = map["type"] as String
 
             if ("SelectionDriverEvent".contentEquals(type)) {
-                return objectMapper.readValue(data, SelectionDriverEvent.class);
+                return objectMapper.readValue(data, SelectionDriverEvent::class.java)
             } else if ("StatusChangedEvent".contentEquals(type)) {
-                return objectMapper.readValue(data, StatusChangedEvent.class);
+                return objectMapper.readValue(data, StatusChangedEvent::class.java)
             }
-            throw new IllegalArgumentException("Unknown type: " + type);
-        } catch (Exception e) {
-            throw new RuntimeException("Error deserializing ", e);
+            throw IllegalArgumentException("Unknown type: $type")
+        } catch (e: Exception) {
+            throw RuntimeException("Error deserializing ", e)
         }
     }
 }

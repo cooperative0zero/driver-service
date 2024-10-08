@@ -1,42 +1,33 @@
-package com.modsen.software.driver.kafka.configuration;
+package com.modsen.software.driver.kafka.configuration
 
-import com.modsen.software.driver.kafka.event.BaseDriverEvent;
-import com.modsen.software.driver.kafka.util.DriverEventSerializer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.modsen.software.driver.kafka.event.BaseDriverEvent
+import com.modsen.software.driver.kafka.util.DriverEventSerializer
+import org.apache.kafka.clients.producer.ProducerConfig
+import org.apache.kafka.common.serialization.StringSerializer
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.kafka.core.DefaultKafkaProducerFactory
+import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.core.ProducerFactory
 
 @Configuration
-public class KafkaProducerConfig {
-
-    @Value(value = "${spring.kafka.bootstrap-servers}")
-    private String bootstrapAddress;
+class KafkaProducerConfig(
+    @Value(value = "\${spring.kafka.bootstrap-servers}")
+    private val bootstrapAddress: String
+) {
 
     @Bean
-    public ProducerFactory<String, BaseDriverEvent> producerFactory() {
-        Map<String, Object> configProps = new HashMap<>();
-        configProps.put(
-                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                bootstrapAddress);
-        configProps.put(
-                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class);
-        configProps.put(
-                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                DriverEventSerializer.class);
-        return new DefaultKafkaProducerFactory<>(configProps);
+    fun producerFactory(): ProducerFactory<String, BaseDriverEvent> {
+        val configProps: MutableMap<String, Any?> = HashMap()
+        configProps[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapAddress
+        configProps[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
+        configProps[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = DriverEventSerializer::class.java
+        return DefaultKafkaProducerFactory(configProps)
     }
 
     @Bean
-    public KafkaTemplate<String, BaseDriverEvent> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    fun kafkaTemplate(): KafkaTemplate<String, BaseDriverEvent> {
+        return KafkaTemplate(producerFactory())
     }
 }

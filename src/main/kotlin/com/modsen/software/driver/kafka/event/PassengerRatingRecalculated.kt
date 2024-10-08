@@ -1,20 +1,6 @@
-package com.modsen.software.driver.kafka.event;
+package com.modsen.software.driver.kafka.event
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-@EqualsAndHashCode(callSuper = true)
-@Data
-@NoArgsConstructor
-public class PassengerRatingRecalculated extends BaseRatingEvent {
-    private Long passengerId;
-    private Float newValue;
-
-    public PassengerRatingRecalculated(Long passengerId, Float newValue) {
-        this.passengerId = passengerId;
-        this.newValue = newValue;
-
-        this.type = this.getClass().getSimpleName();
+data class PassengerRatingRecalculated(val passengerId: Long, val newValue: Float)
+    : BaseRatingEvent(PassengerRatingRecalculated::class.java.simpleName) {
+        constructor() : this(0, 0f)
     }
-}
